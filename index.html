@@ -69,11 +69,11 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .playview{display:flex;flex-direction:column;flex:1;min-height:0}
 .board{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;min-height:0;padding-top:2px}
 .mascots{
-  display:flex;justify-content:center;align-items:flex-end;gap:2px;
-  margin:0 0 -12px;position:relative;z-index:0;pointer-events:none;
+  display:flex;justify-content:center;align-items:flex-end;gap:3px;
+  margin:0 0 2px;position:relative;z-index:0;pointer-events:none;
 }
-.mascot{width:104px;height:110px;filter:drop-shadow(0 8px 12px rgba(190,110,140,.22))}
-.mascot.cat{width:96px;height:102px;margin-bottom:2px}
+.mascot{width:100px;height:106px;filter:drop-shadow(0 8px 12px rgba(190,110,140,.22))}
+.mascot.cat{width:92px;height:98px;margin-bottom:1px}
 .bob{animation:bob 3.4s ease-in-out infinite}
 .bob2{animation:bob 3.9s ease-in-out .35s infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
@@ -253,9 +253,9 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .pausecard .btn{width:100%}
 
 @media (max-height:720px){
-  .mascots{margin-bottom:-8px}
-  .mascot{width:88px;height:93px}
-  .mascot.cat{width:80px;height:85px}
+  .mascots{margin-bottom:1px}
+  .mascot{width:84px;height:89px}
+  .mascot.cat{width:78px;height:83px}
   .card{max-height:236px}
   .promptbox{min-height:96px}
   .promptword{font-size:clamp(46px,15.4vw,66px)}
@@ -347,7 +347,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
             <ellipse cx="60" cy="97.6" rx="4.2" ry="4.8" fill="#b06a80"/>
           </g>
           <g class="face face-sad">
-            <path d="M39 68.4l9.6 3.6M81 68.4l-9.6 3.6" stroke="#4a2b3a" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M39.4 72.2l9.4-3.6M80.6 72.2l-9.4-3.6" stroke="#4a2b3a" stroke-width="2.2" stroke-linecap="round"/>
             <ellipse cx="47" cy="80.6" rx="4.8" ry="5.4" fill="#4a2b3a"/>
             <ellipse cx="73" cy="80.6" rx="4.8" ry="5.4" fill="#4a2b3a"/>
             <circle cx="45.3" cy="78.5" r="1.6" fill="#fff"/>
@@ -382,12 +382,14 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
             <circle cx="0" cy="0" r="2.1" fill="#fff8dc"/>
           </g>
           <g class="face face-idle">
-            <ellipse cx="47" cy="84" rx="5.4" ry="6.4" fill="#4a3a2a"/>
-            <ellipse cx="73" cy="84" rx="5.4" ry="6.4" fill="#4a3a2a"/>
-            <circle cx="45.1" cy="81.3" r="2.1" fill="#fff"/>
-            <circle cx="71.1" cy="81.3" r="2.1" fill="#fff"/>
-            <circle cx="49.2" cy="87.2" r="1.1" fill="#fff" opacity=".85"/>
-            <circle cx="75.2" cy="87.2" r="1.1" fill="#fff" opacity=".85"/>
+            <ellipse cx="47" cy="84" rx="5.9" ry="6.9" fill="#4a3a2a"/>
+            <ellipse cx="73" cy="84" rx="5.9" ry="6.9" fill="#4a3a2a"/>
+            <circle cx="45" cy="81" r="2.3" fill="#fff"/>
+            <circle cx="71" cy="81" r="2.3" fill="#fff"/>
+            <circle cx="49.4" cy="87.4" r="1.2" fill="#fff" opacity=".9"/>
+            <circle cx="75.4" cy="87.4" r="1.2" fill="#fff" opacity=".9"/>
+            <path d="M40.2 77.2l-4-2.6M40.2 82.6l-4.6-.8" stroke="#4a3a2a" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M79.8 77.2l4-2.6M79.8 82.6l4.6-.8" stroke="#4a3a2a" stroke-width="1.6" stroke-linecap="round"/>
             <ellipse cx="34" cy="95" rx="7.6" ry="4.4" fill="#ffb3c7" opacity=".78"/>
             <ellipse cx="86" cy="95" rx="7.6" ry="4.4" fill="#ffb3c7" opacity=".78"/>
             <path d="M27 89.6H19M27 95.4l-7.6 2.6M93 89.6h8M93 95.4l7.6 2.6" stroke="#e8bd76" stroke-width="1.6" stroke-linecap="round" opacity=".95"/>
@@ -417,7 +419,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
             <ellipse cx="60" cy="100" rx="4" ry="4.6" fill="#a9702f"/>
           </g>
           <g class="face face-sad">
-            <path d="M39 74.4l9.6 3.6M81 74.4l-9.6 3.6" stroke="#4a3a2a" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M39.4 78.2l9.4-3.6M80.6 78.2l-9.4-3.6" stroke="#4a3a2a" stroke-width="2.2" stroke-linecap="round"/>
             <ellipse cx="47" cy="84.6" rx="4.8" ry="5.4" fill="#4a3a2a"/>
             <ellipse cx="73" cy="84.6" rx="4.8" ry="5.4" fill="#4a3a2a"/>
             <circle cx="45.3" cy="82.5" r="1.6" fill="#fff"/>
