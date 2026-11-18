@@ -176,17 +176,20 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 }
 .promptword{
   display:block;font-weight:900;font-size:clamp(56px,19.4vw,84px);line-height:1.08;
-  letter-spacing:-.04em;transition:transform .1s;white-space:nowrap;
+  letter-spacing:.04em;transition:transform .1s;white-space:nowrap;
   text-shadow:0 2px 0 rgba(0,0,0,.07);
 }
-/* bright, clearly separated colours; the two luminous ones keep a thin dark
-   edge of the same hue so they stay readable on the white prompt box */
+/* bright, clearly separated colours. Korean syllables are never squeezed
+   together (letter-spacing stays positive), and no text stroke is used: on
+   Android the stroke is drawn over the glyph's own strokes and leaves dark
+   lines inside ㅍ, ㄹ and ㅏ. The one luminous hue (yellow) gets its depth
+   from a soft same-hue shadow instead of an outline. */
 .promptword.c-red{color:#EF2D3D}
 .promptword.c-blue{color:#2563EB}
-.promptword.c-yellow{color:#FFD400;-webkit-text-stroke:1.3px #b37600;text-shadow:0 2px 0 rgba(150,95,0,.32)}
+.promptword.c-yellow{color:#FFD400;text-shadow:0 2px 0 rgba(190,125,0,.38),0 0 2px rgba(175,115,0,.35)}
 .promptword.c-green{color:#12A150}
 .promptword.c-purple{color:#8B3DFF}
-.promptword.c-orange{color:#FF7A00;-webkit-text-stroke:.7px #c25a00;text-shadow:0 2px 0 rgba(150,70,0,.22)}
+.promptword.c-orange{color:#FF6200}
 
 .feedback{
   min-height:19px;text-align:center;font-size:12.5px;font-weight:800;line-height:1.35;
@@ -208,8 +211,8 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
   width:19px;height:19px;flex:0 0 auto;border-radius:50%;
   box-shadow:inset 0 0 0 2px rgba(255,255,255,.85), 0 0 0 1px rgba(30,50,110,.16);
 }
-.ansbtn .chip.chip-yellow{box-shadow:inset 0 0 0 2px rgba(255,255,255,.8), 0 0 0 1.8px #b37600}
-.ansbtn .chip.chip-orange{box-shadow:inset 0 0 0 2px rgba(255,255,255,.8), 0 0 0 1.5px #c25a00}
+.ansbtn .chip.chip-yellow{box-shadow:inset 0 0 0 2px rgba(255,255,255,.8), 0 0 0 1px rgba(180,120,0,.45)}
+.ansbtn .chip.chip-orange{box-shadow:inset 0 0 0 2px rgba(255,255,255,.8), 0 0 0 1px rgba(190,85,0,.4)}
 .ansbtn .aname{font-size:16.5px;font-weight:900;color:#4a2735;letter-spacing:-.03em;white-space:nowrap}
 .ansbtn.ok{background:#e9fbf1;border-color:#38c98a;box-shadow:0 5px 0 #b7ebd1}
 .ansbtn.no{background:#fff0f2;border-color:#ff8fa0;box-shadow:0 5px 0 #ffd2d9;animation:shake .4s ease}
@@ -595,19 +598,18 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
   'use strict';
 
   /* ---------- colors ----------
-     Six bright, clearly separated hues. Yellow (#FFD400) and orange (#FF7A00)
-     are luminous on purpose, so each carries a thin dark edge of its own hue
-     (.promptword.c-yellow / .c-orange) to stay readable on the white box while
-     still looking like a pretty, bright yellow. The answer chip always paints
-     exactly the same hex the word is painted with, so what a child compares is
-     one and the same colour. */
+     Six bright, clearly separated hues. Orange is the deep vivid #FF6200 so a
+     child can tell it from red and yellow without any outline, and yellow
+     (#FFD400) is the only luminous one, softened by a same-hue shadow rather
+     than a text stroke. The answer chip always paints exactly the same hex the
+     word is painted with, so what a child compares is one and the same colour. */
   var COLORS = [
     { id: 'red', name: '빨강', hex: '#EF2D3D' },
     { id: 'blue', name: '파랑', hex: '#2563EB' },
     { id: 'yellow', name: '노랑', hex: '#FFD400' },
     { id: 'green', name: '초록', hex: '#12A150' },
     { id: 'purple', name: '보라', hex: '#8B3DFF' },
-    { id: 'orange', name: '주황', hex: '#FF7A00' }
+    { id: 'orange', name: '주황', hex: '#FF6200' }
   ];
   var C = {};
   for (var ci = 0; ci < COLORS.length; ci++) { C[COLORS[ci].id] = COLORS[ci]; }
