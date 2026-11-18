@@ -66,13 +66,14 @@ button{font-family:inherit;cursor:pointer}
 
 main{flex:1;display:flex;flex-direction:column;min-height:0}
 .playview{display:flex;flex-direction:column;flex:1;min-height:0}
+.board{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;min-height:0;padding-top:2px}
 
 .mascots{
   display:flex;justify-content:center;align-items:flex-end;gap:2px;
-  margin:0 0 -22px;position:relative;z-index:0;pointer-events:none;
+  margin:0 0 -12px;position:relative;z-index:0;pointer-events:none;
 }
-.mascot{width:94px;height:86px;filter:drop-shadow(0 8px 12px rgba(60,90,160,.18))}
-.mascot.bear{width:88px;height:82px;margin-bottom:3px}
+.mascot{width:104px;height:94px;filter:drop-shadow(0 8px 12px rgba(60,90,160,.18))}
+.mascot.bear{width:96px;height:90px;margin-bottom:2px}
 .bob{animation:bob 3.4s ease-in-out infinite}
 .bob2{animation:bob 3.9s ease-in-out .35s infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
@@ -186,7 +187,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .ansbtn.reveal{border-color:#ffbe2e;box-shadow:0 0 0 3px rgba(255,190,46,.35), 0 5px 0 #ffe1a3}
 .ansbtn[disabled]{opacity:.85}
 
-.resultview{padding-top:2px}
+.resultview{padding-top:2px;display:flex;flex-direction:column;justify-content:center;flex:1 1 auto}
 .resultcard{background:#fff;border-radius:28px;padding:16px 16px 18px;box-shadow:0 20px 44px -16px rgba(56,92,170,.4);text-align:center}
 .resultmascots{display:flex;justify-content:center;margin:-2px 0 0}
 .resultmascots .mascot{width:78px;height:72px}
@@ -250,9 +251,9 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .pausecard .btn{width:100%}
 
 @media (max-height:720px){
-  .mascots{margin-bottom:-16px}
-  .mascot{width:80px;height:74px}
-  .mascot.bear{width:75px;height:70px}
+  .mascots{margin-bottom:-8px}
+  .mascot{width:86px;height:78px}
+  .mascot.bear{width:80px;height:74px}
   .promptbox{min-height:96px}
   .promptword{font-size:clamp(42px,14.4vw,60px)}
   .ansbtn{height:46px}
@@ -384,6 +385,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
       </div>
       <div class="progress"><i id="progFill"></i></div>
 
+      <div class="board">
       <div class="mission m-ink" id="missionBadge">
         <span class="mico" id="missionIcon">🎨</span>
         <span class="mtxt"><b id="missionText">글씨 색깔 고르기!</b><i id="missionSub">글자가 칠해진 색을 골라요</i></span>
@@ -394,6 +396,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
       </div>
       <div class="feedback" id="feedback" aria-live="polite"></div>
       <div class="answers" id="answers"></div>
+      </div>
     </section>
 
     <section class="resultview" id="resultView" hidden>
