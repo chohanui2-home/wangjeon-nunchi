@@ -220,6 +220,43 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .ansbtn.reveal{border-color:#ffbe2e;box-shadow:0 0 0 3px rgba(255,190,46,.35), 0 5px 0 #ffe1a3}
 .ansbtn[disabled]{opacity:.85}
 
+/* 6단계 준비 화면 — 30초가 전부 승부라, 탭을 누른 그 순간부터 시계가 흐르면
+   화면이 바뀌는 동안 몇 초를 그냥 잃는다. 그래서 6단계에 들어오면 30.0초에
+   멈춘 준비 화면을 먼저 보여 주고, 🚀 시작하기를 누른 순간에 첫 문제와
+   카운트다운을 함께 건다. */
+.readypanel{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.readycard{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  background:linear-gradient(165deg,#fffafc 0%,#ffeaf1 56%,#fff4ec 100%);
+  border:3px solid #fff;border-radius:28px;padding:18px 16px 17px;
+  box-shadow:0 20px 36px -12px rgba(240,100,135,.42), inset 0 2px 0 rgba(255,255,255,.95);
+}
+.readychip{
+  display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:99px;padding:5px 14px 6px;
+  color:#d6365f;font-size:14.5px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+  box-shadow:0 5px 14px rgba(214,110,140,.2), 0 0 0 2px rgba(255,255,255,.9);
+}
+.readychip .rci{font-size:15px;line-height:1}
+.readycard h2{margin:10px 0 0;font-size:21px;font-weight:900;line-height:1.25;letter-spacing:-.045em;color:#c9305a}
+.readytext{margin:7px 0 0;font-size:12.8px;font-weight:800;line-height:1.5;letter-spacing:-.02em;color:#a8768a}
+.readytext b{color:#d6365f;font-weight:900}
+.startbtn{
+  width:100%;max-width:268px;height:56px;margin-top:15px;border-radius:18px;
+  font-size:18.5px;font-weight:900;letter-spacing:-.03em;
+  animation:startGlow 2.6s ease-in-out infinite;
+}
+@keyframes startGlow{
+  0%,100%{box-shadow:0 5px 0 #c9305a,0 0 0 0 rgba(242,96,127,.5)}
+  60%{box-shadow:0 5px 0 #c9305a,0 0 0 14px rgba(242,96,127,0)}
+}
+.readyhint{margin:9px 0 0;font-size:11.5px;font-weight:800;letter-spacing:-.02em;color:#c093a6}
+@media (max-height:720px){
+  .readycard{padding:13px 14px 12px}
+  .readycard h2{font-size:19px;margin-top:8px}
+  .readytext{font-size:12px}
+  .startbtn{height:50px;font-size:17px;margin-top:12px}
+}
+
 .resultview{padding-top:2px;display:flex;flex-direction:column;justify-content:center;flex:1 1 auto}
 .resultcard{background:#fff;border-radius:28px;padding:16px 16px 18px;box-shadow:0 20px 44px -16px rgba(214,110,140,.38);text-align:center}
 .resultmascots{display:flex;justify-content:center;margin:-2px 0 0}
@@ -483,6 +520,15 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
       <div class="progress"><i id="progFill"></i></div>
 
       <div class="board">
+      <div class="readypanel" id="readyPanel" hidden>
+        <div class="readycard">
+          <span class="readychip"><span class="rci" aria-hidden="true">⏱️</span><b id="readyClock">30.0초</b></span>
+          <h2>30초 타임어택 준비!</h2>
+          <p class="readytext"><b>시작하기</b>를 누르면 30초가 흐르기 시작해요.<br>미션 배지를 보고 최대한 많이 맞혀 보세요!</p>
+          <button class="btn solid startbtn" id="startBtn" type="button">🚀 시작하기</button>
+          <p class="readyhint">누르기 전까지는 시간이 흐르지 않아요</p>
+        </div>
+      </div>
       <div class="card m-ink" id="card">
         <div class="mission m-ink" id="missionBadge" role="status">
           <span class="mico" id="missionIcon">🎨</span>
@@ -628,7 +674,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
     { id: 3, name: '색깔 5개', short: '5색', colors: ['red', 'blue', 'yellow', 'green', 'purple'], count: 12, mission: 'ink', speed: true },
     { id: 4, name: '미션 반전!', short: '반전', colors: ['red', 'blue', 'yellow', 'green', 'purple'], count: 12, mission: 'mixed', speed: true },
     { id: 5, name: '버튼 섞기', short: '섞기', colors: ['red', 'blue', 'yellow', 'green', 'purple', 'orange'], count: 15, mission: 'mixed', speed: true, shuffle: true },
-    { id: 6, name: '눈치왕 30초!', short: '30초', colors: ['red', 'blue', 'yellow', 'green', 'purple', 'orange'], count: 0, mission: 'mixed', speed: true, time: 30000 }
+    { id: 6, name: '눈치왕 30초!', short: '30초', colors: ['red', 'blue', 'yellow', 'green', 'purple', 'orange'], count: 0, mission: 'mixed', speed: true, time: 30000, prepare: true }
   ];
 
   var MISMATCH = 0.86;        /* how often the word and its paint disagree */
@@ -905,7 +951,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
   }
 
   function stepClock(dt) {
-    if (!S.timeLimit || S.phase === 'result' || S.paused) { return; }
+    if (!S.timeLimit || S.phase === 'result' || S.phase === 'ready' || S.paused) { return; }
     S.timeLeft -= dt;
     if (S.timeLeft <= 0) {
       S.timeLeft = 0;
@@ -934,6 +980,47 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
        badge restyle plus flashRing() on the card carry the change instead. */
   }
 
+  /* ---------- level 6 ready gate ----------
+     6단계는 30초가 전부 승부라, 단계 탭을 누른 순간부터 시계가 흐르면 화면이
+     바뀌는 동안 몇 초를 그냥 잃는다. 그래서 6단계에 들어오면(탭·다음 단계·다시
+     도전) 30.0초에 멈춘 준비 화면을 먼저 보여 주고, 아이가 🚀 시작하기를 누른
+     순간에 첫 문제와 카운트다운을 함께 건다. */
+  function hideReady() {
+    $('readyPanel').hidden = true;
+    $('card').hidden = false;
+    $('answers').hidden = false;
+    $('feedback').hidden = false;
+  }
+
+  function showReady() {
+    stopTimer();
+    S.phase = 'ready';
+    S.spec = null;
+    S.timeLeft = S.timeLimit;
+    answerButtons = [];
+    $('answers').innerHTML = '';
+    $('answers').hidden = true;
+    feedback('', '');
+    $('feedback').hidden = true;
+    $('card').hidden = true;
+    $('readyPanel').hidden = false;
+    $('readyClock').textContent = (Math.max(0, S.timeLeft) / 1000).toFixed(1) + '초';
+    setMood('idle');
+    renderStatus();
+    renderProgress();
+  }
+
+  function beginRun() {
+    if (S.phase !== 'ready') { return; }
+    hideReady();
+    S.timeLeft = S.timeLimit;
+    showProblem();
+    renderStatus();
+    renderProgress();
+    startTimer();
+    if (S.timeLimit) { toast('30초 안에 최대한 많이 맞혀 봐요!'); }
+  }
+
   function startLevel(id) {
     stopTimer();
     var level = LEVELS[id - 1];
@@ -955,12 +1042,13 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
     $('pauseMask').hidden = true;
     $('resultView').hidden = true;
     $('playView').hidden = false;
-    showProblem();
     updateTabs();
     save.lastLevel = id;
     writeStore();
+    if (level.prepare) { showReady(); return; }
+    hideReady();
+    showProblem();
     startTimer();
-    if (id === 6) { toast('30초 안에 최대한 많이 맞혀 봐요!'); }
   }
 
   function nextProblem() {
@@ -1215,8 +1303,15 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
     });
     $('pauseBtn').addEventListener('click', function () { setPaused(true); });
     $('resumeBtn').addEventListener('click', function () { setPaused(false); });
+    $('startBtn').addEventListener('click', function () { sfx('tap'); beginRun(); });
     document.addEventListener('keydown', function (e) {
       if (!e || !e.key) { return; }
+      /* the ready panel answers Enter / Space as well, so a PC player never has
+         to reach for the mouse after picking level 6 */
+      if (S.phase === 'ready' && (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar')) {
+        beginRun();
+        return;
+      }
       var n = parseInt(e.key, 10);
       if (n >= 1 && n <= 9 && S.phase === 'play' && !S.paused) {
         var b = answerButtons[n - 1];
@@ -1249,6 +1344,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
     newMissionState: newMissionState, pickMission: pickMission, makeSpec: makeSpec,
     answerOf: answerOf, answerOrder: answerOrder,
     startLevel: startLevel, answer: answer, nextProblem: nextProblem, showProblem: showProblem,
+    beginRun: beginRun, showReady: showReady,
     stepClock: stepClock, finish: finish, starsFor: starsFor,
     renderMission: renderMission, renderPrompt: renderPrompt, renderAnswers: renderAnswers,
     renderStatus: renderStatus, renderProgress: renderProgress,
