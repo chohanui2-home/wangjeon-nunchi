@@ -374,6 +374,8 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .grec-msg.bad{color:#dc2626}
 .grec-mask{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(17,24,39,.45)}
 .grec-mask[hidden]{display:none}
+/* 모달 안에서는 시트 제목·요약이 이미 있으니 패널 머리와 요약줄을 숨긴다 */
+.grec-mask .grec-h,.grec-mask .grec-sub{display:none}
 .grec-sheet{width:100%;max-width:340px;max-height:calc(100% - 10px);overflow:auto;background:#fff;border-radius:20px;padding:15px 14px 12px;box-shadow:0 20px 44px rgba(15,23,42,.3);text-align:center}
 .grec-ttl{margin:0;font-size:17px;font-weight:900;color:#1f2937;letter-spacing:-.03em}
 .grec-sum{margin:4px 0 0;font-size:12px;font-weight:800;color:#6b7890;word-break:keep-all}
