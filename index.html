@@ -1588,6 +1588,16 @@ var GameRec = (function () {
 
   /* ---------- 기록 창 (게임 중에도 점수를 남길 수 있게) ---------- */
   var REC_HOME = 'recSlot';
+  /* 기록 창의 학년·번호를 적는 동안에는 게임 키(1~9)·시작 키를 받지 않는다.
+     안 그러면 숫자를 적다가 뒤에서 문제가 저절로 풀린다. */
+  function typingInForm(e) {
+    var dlg = $('recDlg');
+    if (dlg && !dlg.hidden) { return true; }
+    var t = e && e.target;
+    if (!t) { return false; }
+    var tag = String(t.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || !!t.isContentEditable;
+  }
   function openRecDlg() {
     var box = $('grec'), host = $('recDlgHost'), dlg = $('recDlg');
     if (!box || !host || !dlg || !dlg.hidden) { return; }
@@ -1652,6 +1662,7 @@ var GameRec = (function () {
     $('startBtn').addEventListener('click', function () { sfx('tap'); beginRun(); });
     document.addEventListener('keydown', function (e) {
       if (!e || !e.key) { return; }
+      if (typingInForm(e)) { return; }
       /* the ready panel answers Enter / Space as well, so a PC player never has
          to reach for the mouse after picking level 6 */
       if (S.phase === 'ready' && (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar')) {
