@@ -347,6 +347,51 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
   .mission .mtxt b{font-size:17px}
   .mission .mtxt i{font-size:11px}
 }
+/* ==== RECORD PANEL (shared) — ♡왕전초 놀이터 기록 남기기 ==== */
+.grec{margin:10px 0 0;padding:10px 10px 9px;border:1.5px solid #dfe6f0;border-radius:14px;background:#fbfdff;text-align:center}
+.grec[hidden]{display:none}
+.grec-h{margin:0;font-size:13px;font-weight:900;color:#25324a;letter-spacing:-.02em}
+.grec-sub{margin:2px 0 0;font-size:11px;font-weight:800;color:#7a8798;letter-spacing:-.01em;word-break:keep-all}
+.grec-row{display:flex;gap:6px;margin-top:8px}
+.grec-f{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:3px;font-size:10.5px;font-weight:900;color:#6b7890;letter-spacing:-.01em}
+.grec-f input{
+  width:100%;height:40px;border:1.5px solid #d6deea;border-radius:11px;background:#fff;
+  text-align:center;font:inherit;font-size:16px;font-weight:900;color:#1f2937;padding:0 2px;
+  -webkit-appearance:none;appearance:none;
+}
+.grec-f input::placeholder{font-size:12px;font-weight:800;color:#b3bdcc}
+.grec-f input:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.16)}
+.grec-f input::-webkit-outer-spin-button,.grec-f input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.grec-btn{
+  margin-top:8px;width:100%;height:42px;border:none;border-radius:12px;cursor:pointer;
+  background:linear-gradient(180deg,#3b82f6,#2563eb);color:#fff;font:inherit;font-size:15px;font-weight:900;
+  letter-spacing:-.02em;box-shadow:0 3px 0 #1d4ed8;
+}
+.grec-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #1d4ed8}
+.grec-btn[disabled]{background:#9aa7b8;box-shadow:0 3px 0 #7d8a9b;cursor:default}
+.grec-btn[disabled]:active{transform:none}
+.grec-msg{margin:7px 0 0;min-height:15px;font-size:11.5px;font-weight:900;color:#2563eb;line-height:1.35;word-break:keep-all}
+.grec-msg.bad{color:#dc2626}
+.grec-mask{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(17,24,39,.45)}
+.grec-mask[hidden]{display:none}
+.grec-sheet{width:100%;max-width:340px;max-height:calc(100% - 10px);overflow:auto;background:#fff;border-radius:20px;padding:15px 14px 12px;box-shadow:0 20px 44px rgba(15,23,42,.3);text-align:center}
+.grec-ttl{margin:0;font-size:17px;font-weight:900;color:#1f2937;letter-spacing:-.03em}
+.grec-sum{margin:4px 0 0;font-size:12px;font-weight:800;color:#6b7890;word-break:keep-all}
+.grec-close{margin-top:10px;width:100%;height:40px;border:none;border-radius:12px;background:#eef2f7;color:#42516a;font:inherit;font-size:14px;font-weight:900;cursor:pointer}
+.grec-close:active{background:#e2e8f1}
+@media (max-height:520px){
+  .grec-sheet{padding:11px 12px 9px}
+  .grec-f input{height:36px}
+  .grec-btn{height:38px;margin-top:6px}
+}
+.homebtn{
+  display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px;border-radius:10px;
+  background:#FFFFFF;border:1px solid rgba(120,132,152,.34);color:#3C4657;text-decoration:none;
+  font:inherit;font-size:12px;font-weight:900;letter-spacing:-.02em;line-height:1;
+  -webkit-tap-highlight-color:transparent;white-space:nowrap;
+}
+.homebtn:active{transform:translateY(1px)}
+/* ==== /RECORD PANEL ==== */
 </style>
 </head>
 <body>
@@ -355,6 +400,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
     <h1><span class="hh">♡</span>왕전초 눈치왕!<span class="hh">♡</span></h1>
   </header>
   <div class="toptools">
+    <a class="homebtn" href="https://chohanui2-home.github.io/games/" aria-label="다른 게임 고르기">🏠 다른 게임</a>
     <button class="iconbtn" id="sndBtn" type="button" aria-label="효과음 켜기/끄기">
       <svg id="sndOnIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.2L12 5.6v12.8L7.2 14.5H4z"/><path d="M15.6 8.6a4.6 4.6 0 0 1 0 6.8"/><path d="M18.2 6a8 8 0 0 1 0 12"/></svg>
       <svg id="sndOffIcon" viewBox="0 0 24 24" aria-hidden="true" style="display:none"><path d="M4 9.5h3.2L12 5.6v12.8L7.2 14.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
@@ -620,6 +666,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
           <div><span>평균 반응</span><b id="rRT">0.0초</b></div>
         </div>
         <p class="bestline" id="rBest"></p>
+        <div id="recSlot"></div>
         <div class="resultButtons">
           <div class="btnrow" id="btnRow">
             <button class="btn ghost" id="retryBtn" type="button">다시 도전</button>
@@ -647,6 +694,245 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 </div>
 
 <script>
+/* ==== RECORD PANEL (shared) — ♡왕전초 놀이터 기록 남기기 ==== */
+/* 학년·번호(필수) + 이름(선택)을 적어 Supabase game_records 에 한 줄 남긴다.
+   공용 태블릿 원칙: 브라우저 저장소를 쓰지 않는다(새로고침하면 깨끗).
+   한 판이 끝나면 reset() 으로 다시 등록할 수 있게 한다. */
+var GameRec = (function () {
+  'use strict';
+
+  var API = 'https://hlqyzstixodeqywgfmvg.supabase.co';
+  var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhscXl6c3RpeG9kZXF5d2dmbXZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4MjEwNDcsImV4cCI6MjExMDM5NzA0N30.pgZlwx_9cNMM9CjUag6SBl5k5unOM2SI9f0yn3HA2cQ';
+
+  var PANEL =
+    '<section class="grec" id="grec" hidden aria-label="기록 남기기">' +
+      '<p class="grec-h">🏆 기록 남기기</p>' +
+      '<p class="grec-sub" id="grecSub"></p>' +
+      '<div class="grec-row">' +
+        '<label class="grec-f"><span>학년</span>' +
+          '<input id="grecGrade" type="number" inputmode="numeric" min="1" max="6" step="1" placeholder="3" autocomplete="off" enterkeyhint="next"></label>' +
+        '<label class="grec-f"><span>번호</span>' +
+          '<input id="grecNum" type="number" inputmode="numeric" min="1" max="99" step="1" placeholder="12" autocomplete="off" enterkeyhint="next"></label>' +
+        '<label class="grec-f"><span>이름</span>' +
+          '<input id="grecName" type="text" maxlength="10" placeholder="선택" autocomplete="off" enterkeyhint="done"></label>' +
+      '</div>' +
+      '<button class="grec-btn" id="grecBtn" type="button">등록</button>' +
+      '<p class="grec-msg" id="grecMsg" role="status" aria-live="polite"></p>' +
+    '</section>';
+
+  var MASK =
+    '<div class="grec-mask" id="grecMask" hidden>' +
+      '<div class="grec-sheet" role="dialog" aria-modal="true" aria-label="기록 남기기">' +
+        '<p class="grec-ttl" id="grecTtl">🏆 기록 남기기</p>' +
+        '<p class="grec-sum" id="grecSum"></p>' +
+        PANEL +
+        '<button class="grec-close" id="grecClose" type="button">닫기</button>' +
+      '</div>' +
+    '</div>';
+
+  var cfg = null;          /* {id, title, result:function(){...}} */
+  var modal = false;
+  var mem = { g: '', n: '', s: '' };
+  var sent = false, busy = false, wired = false;
+
+  function $(id) { return document.getElementById(id); }
+
+  function post(fn, body, done) {
+    var xhr = new XMLHttpRequest();
+    var finished = false;
+    function end(err, data) {
+      if (finished) { return; }
+      finished = true;
+      done(err, data);
+    }
+    try {
+      xhr.open('POST', API + '/rest/v1/rpc/' + fn, true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('apikey', KEY);
+      xhr.setRequestHeader('Authorization', 'Bearer ' + KEY);
+      xhr.setRequestHeader('Accept', 'application/json');
+      xhr.timeout = 10000;
+      xhr.onload = function () {
+        var data = null;
+        try { data = JSON.parse(xhr.responseText); } catch (e) {}
+        if (xhr.status >= 200 && xhr.status < 300) { end(null, data); }
+        else { end('http_' + xhr.status, data); }
+      };
+      xhr.onerror = function () { end('network', null); };
+      xhr.ontimeout = function () { end('timeout', null); };
+      xhr.send(JSON.stringify(body));
+    } catch (e) {
+      end('client', null);
+    }
+  }
+
+  function say(text, bad) {
+    var m = $('grecMsg');
+    if (!m) { return; }
+    m.textContent = text || '';
+    m.className = 'grec-msg' + (bad ? ' bad' : '');
+  }
+
+  function btn() { return $('grecBtn'); }
+
+  function resultText(r) {
+    if (!r) { return ''; }
+    var bits = [];
+    if (r.detail) { bits.push(r.detail); }
+    if (typeof r.score === 'number') { bits.push('기록 ' + r.score); }
+    if (typeof r.durationSec === 'number' && r.durationSec > 0) {
+      var s = Math.round(r.durationSec);
+      bits.push(Math.floor(s / 60) + '분 ' + (s % 60) + '초');
+    }
+    return bits.join(' · ');
+  }
+
+  function refresh() {
+    var r = cfg && cfg.result ? cfg.result() : null;
+    var sub = $('grecSub'), sum = $('grecSum');
+    var txt = resultText(r);
+    if (sub) { sub.textContent = txt; }
+    if (sum) { sum.textContent = txt; }
+  }
+
+  function submit() {
+    if (!cfg || busy || sent) { return; }
+    var gEl = $('grecGrade'), nEl = $('grecNum'), sEl = $('grecName');
+    var g = parseInt(gEl.value, 10), n = parseInt(nEl.value, 10);
+    var s = (sEl.value || '').replace(/\s+/g, ' ').trim();
+    if (!(g >= 1 && g <= 6)) {
+      say('학년을 1~6 사이 숫자로 적어 주세요.', true);
+      try { gEl.focus(); } catch (e) {}
+      return;
+    }
+    if (!(n >= 1 && n <= 99)) {
+      say('번호를 1~99 사이 숫자로 적어 주세요.', true);
+      try { nEl.focus(); } catch (e) {}
+      return;
+    }
+    mem.g = String(g); mem.n = String(n); mem.s = s ? s.slice(0, 10) : '';
+
+    var r = (cfg.result && cfg.result()) || {};
+    var body = {
+      p_game_id: cfg.id,
+      p_game_title: cfg.title,
+      p_grade: g,
+      p_student_num: n,
+      p_student_name: mem.s || null,
+      p_score: Math.max(0, Math.round(typeof r.score === 'number' ? r.score : 0)),
+      p_detail: r.detail || null,
+      p_duration_sec: (typeof r.durationSec === 'number' && r.durationSec > 0)
+        ? Math.round(r.durationSec * 10) / 10 : null
+    };
+
+    busy = true;
+    btn().disabled = true;
+    btn().textContent = '보내는 중…';
+    say('');
+
+    post('game_record_submit', body, function (err, data) {
+      busy = false;
+      if (!err && data && data.ok) {
+        sent = true;
+        btn().textContent = '등록 완료 ✓';
+        say('등록 완료! 다음 친구는 새로 시작해 주세요.');
+      } else {
+        btn().disabled = false;
+        btn().textContent = '다시 보내기';
+        say(err === 'network' || err === 'timeout'
+          ? '인터넷이 잠깐 끊긴 것 같아요. 다시 눌러 주세요.'
+          : '지금은 기록을 못 보냈어요. 잠시 뒤 다시 눌러 주세요.', true);
+      }
+    });
+  }
+
+  function wire() {
+    if (wired) { return; }
+    wired = true;
+    var gEl = $('grecGrade'), nEl = $('grecNum'), sEl = $('grecName'), b = btn(), c = $('grecClose');
+    if (!gEl || !b) { return; }
+    var clear = function () { if (!sent) { say(''); } };
+    gEl.addEventListener('input', function () { clear(); });
+    nEl.addEventListener('input', function () { clear(); });
+    sEl.addEventListener('input', function () { clear(); });
+    gEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); nEl.focus(); } });
+    nEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); sEl.focus(); } });
+    sEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+    b.addEventListener('click', submit);
+    if (c) { c.addEventListener('click', function () { api.close(); }); }
+  }
+
+  function fill() {
+    var gEl = $('grecGrade'), nEl = $('grecNum'), sEl = $('grecName');
+    if (!gEl) { return; }
+    if (!gEl.value) { gEl.value = mem.g; }
+    if (!nEl.value) { nEl.value = mem.n; }
+    if (!sEl.value) { sEl.value = mem.s; }
+  }
+
+  var api = {
+    /* opts: {id, title, slot:'elementId'|null, modal:true|false, result:function()} */
+    setup: function (opts) {
+      cfg = opts || {};
+      modal = !!cfg.modal;
+      if (modal) {
+        try {
+          var host = document.createElement('div');
+          host.innerHTML = MASK;
+          while (host.firstChild) { document.body.appendChild(host.firstChild); }
+          var box = $('grec');
+          box.hidden = false;
+        } catch (e) {}
+      } else if (cfg.slot) {
+        var slot = $(cfg.slot);
+        if (slot) { slot.innerHTML = PANEL; }
+      }
+      wire();
+      fill();
+    },
+    show: function () {
+      var box = $('grec');
+      if (!box) { return; }
+      refresh();
+      box.hidden = false;
+    },
+    hide: function () {
+      var box = $('grec');
+      if (!box) { return; }
+      if (modal) { api.close(); return; }
+      box.hidden = true;
+    },
+    open: function (title, sum) {
+      var mask = $('grecMask');
+      if (!mask) { return; }
+      var t = $('grecTtl');
+      if (t && title) { t.textContent = title; }
+      refresh();
+      if (sum) { $('grecSum').textContent = sum; }
+      refresh();
+      mask.hidden = false;
+    },
+    close: function () {
+      var mask = $('grecMask');
+      if (mask) { mask.hidden = true; }
+    },
+    /* 새 판 시작: 등록 상태를 처음으로 되돌린다(적어 둔 학년·번호는 이 화면 안에서만 기억) */
+    reset: function () {
+      sent = false; busy = false;
+      var b = btn();
+      if (b) { b.disabled = false; b.textContent = '등록'; }
+      say('');
+      var box = $('grec');
+      if (box && !modal) { box.hidden = true; }
+      if (modal) { api.close(); }
+      fill();
+    },
+    isSent: function () { return sent; }
+  };
+
+  return api;
+})();
+/* ==== /RECORD PANEL ==== */
 (function () {
   'use strict';
 
@@ -1041,6 +1327,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
     S.timeLeft = S.timeLimit;
     $('pauseMask').hidden = true;
     $('resultView').hidden = true;
+    GameRec.reset();
     $('playView').hidden = false;
     updateTabs();
     save.lastLevel = id;
@@ -1158,6 +1445,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
     var titles = ['다시 도전해 볼까요?', '조금만 더 힘내요!', '눈치가 빨라요!', '눈치왕 등극!'];
     $('playView').hidden = true;
     $('resultView').hidden = false;
+    GameRec.show();
     $('resultTitle').textContent = titles[stars];
     $('resultSub').textContent = S.level + '단계 · ' + level.name + (S.reason === 'time' ? ' · 시간 종료' : '');
     var st = $('resultStars'), i, txt = '';
@@ -1324,6 +1612,17 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
   }
 
   function init() {
+    GameRec.setup({
+      id: 'nunchi', title: '♡왕전초 눈치왕!♡', slot: 'recSlot',
+      result: function () {
+        var lv = LEVELS[S.level - 1] || { name: '' };
+        var rt = 0, k;
+        for (k = 0; k < S.rts.length; k++) { rt += S.rts[k]; }
+        return { score: S.score,
+                 detail: S.level + '단계 ' + lv.name + ' · ' + S.correct + '/' + S.answered + '문제 정답',
+                 durationSec: rt / 1000 };
+      }
+    });
     var stored = readStore();
     save.best = stored.best || {};
     save.muted = !!stored.muted;
