@@ -890,7 +890,11 @@ var GameRec = (function () {
         if (slot) { slot.innerHTML = PANEL; }
       }
       wire();
-      fill();
+      /* 공용 태블릿: 브라우저 자동완성이 이전 친구의 값을 채워 두지 않도록 비운다 */
+      var gEl = $('grecGrade'), nEl = $('grecNum'), sEl = $('grecName');
+      if (gEl) { gEl.value = ''; }
+      if (nEl) { nEl.value = ''; }
+      if (sEl) { sEl.value = ''; }
     },
     show: function () {
       var box = $('grec');
