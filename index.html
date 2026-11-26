@@ -55,6 +55,8 @@ button{font-family:inherit;cursor:pointer}
   text-shadow:0 1px 0 #fff,0 2px 0 rgba(255,255,255,.85),0 6px 14px rgba(255,125,158,.35);
 }
 .toptools{display:flex;justify-content:flex-end;align-items:center;gap:6px;padding:0 1px 4px}
+/* 🏠 다른 게임은 소리·일시정지와 같은 줄의 맨 왼쪽에 붙인다 */
+.toptools .homebtn{margin-right:auto}
 .toptools .iconbtn{width:29px;height:29px;border-radius:10px}
 .toptools .iconbtn svg{width:16px;height:16px}
 .iconbtn{
@@ -393,6 +395,24 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
   -webkit-tap-highlight-color:transparent;white-space:nowrap;
 }
 .homebtn:active{transform:translateY(1px)}
+/* 🏆 기록 버튼: 작고 흐려서 잘 안 보인다는 요청으로 금색 네모 버튼으로 키웠다 */
+.toptools .recbtn{
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  height:34px;padding:0 13px;border-radius:11px;
+  background:linear-gradient(180deg,#FFE082 0%,#F7A928 100%);
+  border:1.6px solid #DB8608;color:#4E2C00;
+  font-family:inherit;font-size:13.5px;font-weight:900;letter-spacing:-.02em;line-height:1;
+  box-shadow:0 2px 0 #C97A00,0 5px 12px rgba(201,122,0,.24);
+  white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.toptools .recbtn:active{transform:translateY(1px);box-shadow:0 1px 0 #C97A00}
+/* 게임 도중에도 여는 🏆 기록 창 (결과 화면의 기록 칸을 그대로 창 안으로 옮겨 쓴다) */
+.recdlg{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(17,24,39,.45)}
+.recdlg[hidden]{display:none}
+.recdlg-card{width:100%;max-width:330px;max-height:calc(100% - 10px);overflow:auto;background:#fff;border-radius:20px;padding:12px;box-shadow:0 20px 44px rgba(15,23,42,.3)}
+.recdlg-card .grec{margin:0;padding:0;border:0;background:transparent}
+.recdlg-close{width:100%;height:40px;margin-top:10px;border:none;border-radius:12px;background:#eef2f7;color:#42516a;font:inherit;font-size:14px;font-weight:900;cursor:pointer}
+.recdlg-close:active{background:#e2e8f1}
 /* ==== /RECORD PANEL ==== */
 </style>
 </head>
@@ -410,6 +430,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
     <button class="iconbtn" id="pauseBtn" type="button" aria-label="일시정지">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5.5v13M15 5.5v13"/></svg>
     </button>
+    <button class="recbtn" id="recOpenBtn" type="button" aria-label="기록 남기기">🏆 기록</button>
   </div>
 
   <main>
@@ -687,6 +708,13 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 
 <div class="fx" id="fx" aria-hidden="true"></div>
 <div class="toast" id="toast" hidden></div>
+<div class="recdlg" id="recDlg" hidden>
+  <div class="recdlg-card" role="dialog" aria-modal="true" aria-label="기록 남기기">
+    <div id="recDlgHost"></div>
+    <button class="recdlg-close" id="recDlgClose" type="button">닫고 계속 놀기</button>
+  </div>
+</div>
+
 <div class="pausemask" id="pauseMask" hidden>
   <div class="pausecard">
     <p>잠깐 쉬는 중</p>
@@ -1234,7 +1262,7 @@ var GameRec = (function () {
     if (!S.timeLimit) { return; }
     S.lastTick = Date.now();
     S.timer = setInterval(function () {
-      if (S.phase !== 'play' || S.paused) { return; }
+      if (S.phase !== 'play' || S.paused || S.recPause) { return; }
       var now = Date.now();
       var dt = now - S.lastTick;
       S.lastTick = now;
@@ -1243,7 +1271,7 @@ var GameRec = (function () {
   }
 
   function stepClock(dt) {
-    if (!S.timeLimit || S.phase === 'result' || S.phase === 'ready' || S.paused) { return; }
+    if (!S.timeLimit || S.phase === 'result' || S.phase === 'ready' || S.paused || S.recPause) { return; }
     S.timeLeft -= dt;
     if (S.timeLeft <= 0) {
       S.timeLeft = 0;
@@ -1327,12 +1355,14 @@ var GameRec = (function () {
     S.missionState = newMissionState();
     S.order = [];
     S.paused = false;
+    S.recPause = false;
     S.phase = 'play';
     S.reason = ''; S.newRecord = false;
     S.timeLimit = level.time || 0;
     S.timeLeft = S.timeLimit;
     $('pauseMask').hidden = true;
     $('resultView').hidden = true;
+    closeRecDlg();
     GameRec.reset();
     $('playView').hidden = false;
     updateTabs();
@@ -1451,6 +1481,7 @@ var GameRec = (function () {
     var titles = ['다시 도전해 볼까요?', '조금만 더 힘내요!', '눈치가 빨라요!', '눈치왕 등극!'];
     $('playView').hidden = true;
     $('resultView').hidden = false;
+    if (GameRec.isSent()) { GameRec.reset(); }   /* 게임 중에 남긴 기록과 별개로 최종 점수도 남길 수 있게 */
     GameRec.show();
     $('resultTitle').textContent = titles[stars];
     $('resultSub').textContent = S.level + '단계 · ' + level.name + (S.reason === 'time' ? ' · 시간 종료' : '');
@@ -1555,6 +1586,25 @@ var GameRec = (function () {
     if (!S.paused) { S.lastTick = Date.now(); S.shownAt = Date.now(); }
   }
 
+  /* ---------- 기록 창 (게임 중에도 점수를 남길 수 있게) ---------- */
+  var REC_HOME = 'recSlot';
+  function openRecDlg() {
+    var box = $('grec'), host = $('recDlgHost'), dlg = $('recDlg');
+    if (!box || !host || !dlg || !dlg.hidden) { return; }
+    host.appendChild(box);              /* 결과 화면의 기록 칸을 창 안으로 옮긴다 */
+    GameRec.show();                     /* 지금 점수로 요약을 새로 고친다 */
+    dlg.hidden = false;
+    if (S.phase === 'play') { S.recPause = true; }   /* 적는 동안 시간이 흐르지 않게 */
+  }
+  function closeRecDlg() {
+    var dlg = $('recDlg'), box = $('grec'), home = $(REC_HOME);
+    if (!dlg || dlg.hidden) { return; }
+    dlg.hidden = true;
+    if (box && home && box.parentNode !== home) { home.appendChild(box); }
+    GameRec.hide();
+    if (S.recPause) { S.recPause = false; S.lastTick = Date.now(); S.shownAt = Date.now(); }
+  }
+
   /* ---------- manifest ---------- */
   function setupManifest() {
     var link = $('manifestLink');
@@ -1597,6 +1647,8 @@ var GameRec = (function () {
     });
     $('pauseBtn').addEventListener('click', function () { setPaused(true); });
     $('resumeBtn').addEventListener('click', function () { setPaused(false); });
+    $('recOpenBtn').addEventListener('click', function () { sfx('tap'); openRecDlg(); });
+    $('recDlgClose').addEventListener('click', function () { sfx('tap'); closeRecDlg(); });
     $('startBtn').addEventListener('click', function () { sfx('tap'); beginRun(); });
     document.addEventListener('keydown', function (e) {
       if (!e || !e.key) { return; }
